@@ -9,7 +9,12 @@ router.post('/add', async (req, res) => {
     res.redirect('/card')
 })
 
-router.get('/add', async (req, res) => {
+router.delete('/remove/:id', async (req,res)=>{
+    const card = await Card.remove(req.params.id)
+    res.status(200).json(card)
+})
+
+router.get('/', async (req, res) => {
     const card = await Card.fetch()
     res.render('card', {
         title: 'Корзина',
@@ -18,4 +23,5 @@ router.get('/add', async (req, res) => {
         price: card.price
     })
 })
+
 module.exports = router

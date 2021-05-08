@@ -6,6 +6,9 @@ const addRoutes = require('./routes/add')
 const cardRoutes = require('./routes/card' )
 const coursesRoutes = require('./routes/courses')
 
+const login = 'iskander'
+const password = 'IoYU6BzMmZzcV2y8'
+const url = 'mongodb+srv://Iskander:IoYU6BzMmZzcV2y8@online-shop.y8exm.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
 const app = express()
 
 const hbs = exphbs.create({
@@ -17,7 +20,7 @@ app.engine('hbs', hbs.engine)
 app.set('view engine', 'hbs')
 app.set('views', 'views')
 
-app.use(express.static('public'))
+app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.urlencoded({extended: true}))
 
 app.use('/', homeRoutes)
