@@ -20,6 +20,16 @@
     </div>
 
     <input type="hidden" name="id" value="{{course.id}}">
+    <div class="row">
+        <button type="submit" class="btn btn-primary col s3 offset-s5">Редактировать курс</button>
+    </div>
+</form>
 
-    <button class="btn btn-primary">Редактировать курс</button>
+
+<form action="/courses/remove" method="POST">
+    <div class="row">
+        <input type="hidden" name="id" value="{{course.id}}">
+        <button type="submit" class="btn red col s3 offset-s5">Удалить курс</button>
+    </div>
+
 </form>

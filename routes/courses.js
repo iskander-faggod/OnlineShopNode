@@ -4,12 +4,14 @@ const Course = require('../models/course')
 
 router.get('/', async (req, res) => {
     try {
-        const courses = await Course.find();
+        const courses = await Course.find().populate('userId', 'name').select('price title img');
+        console.log(courses.map(user=>user.name))
         const fixedCourses = courses.map(i => i.toObject());
         res.render('courses', {
             title: 'Courses',
             isCourses: true,
-            courses: fixedCourses
+            courses: fixedCourses,
+            name : fixedCourses.name
         });
     } catch (e) {
         console.log(e);
@@ -34,6 +36,18 @@ router.post('/edit', async (req, res) => {
     delete req.body.id
     await Course.findByIdAndUpdate(id, req.body)
     res.redirect('/courses')
+})
+
+router.post('/remove', async (req, res) => {
+
+    try {
+        await Course.deleteOne({_id: req.body.id})
+        // await Course.findById(req.body.id).remove()
+        res.redirect('/courses')
+    } catch (e) {
+        console.log(e)
+        if (e) throw e
+    }
 })
 
 router.get('/:id', async (req, res) => {
