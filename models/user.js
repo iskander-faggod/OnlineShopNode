@@ -36,4 +36,24 @@ const userSchema = new Schema({
 
 }, opts)
 
+userSchema.methods.addToCard = function (course){
+    const items = [...this.card.items]
+    const idx = items.findIndex(c =>{
+        return c.courseId.toString() === course._id.toString()
+    })
+
+    if (idx >= 0){
+        items[idx].count += 1
+    } else {
+        items.push({
+            courseId : course._id,
+            count : 1
+        })
+    }
+
+    this.card = {items}
+    return this.save()
+}
+
+
 module.exports = model('User', userSchema)

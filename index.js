@@ -18,7 +18,7 @@ const app = express()
 
 const User = require('./models/user')
 const Course = require('./models/course')
-const Card = require('./models/card')
+
 
 const hbs = exphbs.create({
     defaultLayout: 'main',

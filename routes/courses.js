@@ -5,13 +5,14 @@ const Course = require('../models/course')
 router.get('/', async (req, res) => {
     try {
         const courses = await Course.find().populate('userId', 'name').select('price title img');
-        console.log(courses.map(user=>user.name))
+        const userName = req.user.name
+        console.log(userName)
         const fixedCourses = courses.map(i => i.toObject());
         res.render('courses', {
             title: 'Courses',
             isCourses: true,
             courses: fixedCourses,
-            name : fixedCourses.name
+            name : userName
         });
     } catch (e) {
         console.log(e);

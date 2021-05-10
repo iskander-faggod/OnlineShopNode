@@ -31,3 +31,6 @@
     align-items: center;
     justify-content: space-between;
 }
+.name{
+    font-size: 30px;
+}
