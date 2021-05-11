@@ -1,12 +1,4 @@
-const {Schema, model} = require('mongoose');
-const opts = {
-    toObject: {
-        virtuals: true,
-    },
-    toJSON: {
-        virtuals: true,
-    },
-};
+const {Schema, model} = require('mongoose')
 
 const userSchema = new Schema({
     email: {
@@ -17,43 +9,57 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
-    card: {
+    cart: {
         items: [
             {
-                count:{
-                    type:Number,
+                count: {
+                    type: Number,
                     required: true,
-                    default: 0
+                    default: 1
                 },
-                courseId:{
+                courseId: {
                     type: Schema.Types.ObjectId,
                     ref: 'Course',
-                    required:true,
+                    required: true
                 }
             }
         ]
     }
+})
 
-}, opts)
 
-userSchema.methods.addToCard = function (course){
-    const items = [...this.card.items]
-    const idx = items.findIndex(c =>{
+userSchema.methods.addToCart = function(course) {
+    const items = [...this.cart.items]
+    const idx = items.findIndex(c => {
         return c.courseId.toString() === course._id.toString()
     })
 
-    if (idx >= 0){
-        items[idx].count += 1
+    if (idx >= 0) {
+        items[idx].count = items[idx].count + 1
     } else {
         items.push({
-            courseId : course._id,
-            count : 1
+            courseId: course._id,
+            count: 1
         })
     }
 
-    this.card = {items}
+    this.cart = {items}
     return this.save()
 }
 
+
+userSchema.methods.removeFromCart = function(id) {
+    let items = [...this.cart.items]
+    const idx = items.findIndex(c => c.courseId.toString() === id.toString())
+
+    if (items[idx].count === 1) {
+        items = items.filter(c => c.courseId.toString() !== id.toString())
+    } else {
+        items[idx].count--
+    }
+
+    this.cart = {items}
+    return this.save()
+}
 
 module.exports = model('User', userSchema)
