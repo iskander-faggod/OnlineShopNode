@@ -9,6 +9,7 @@ const homeRoutes = require('./routes/home')
 const addRoutes = require('./routes/add')
 const cardRoutes = require('./routes/card')
 const coursesRoutes = require('./routes/courses')
+const orderRoutes = require('./routes/order')
 
 const login = 'iskander'
 const password = 'IoYU6BzMmZzcV2y8'
@@ -49,6 +50,7 @@ app.use('/', homeRoutes)
 app.use('/add', addRoutes)
 app.use('/courses', coursesRoutes)
 app.use('/card', cardRoutes)
+app.use('/order', orderRoutes)
 
 const PORT = process.env.PORT || 3000
 

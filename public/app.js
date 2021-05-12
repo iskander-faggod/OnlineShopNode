@@ -1,8 +1,27 @@
-document.querySelectorAll('.price').forEach(node => {
-    node.textContent = new Intl.NumberFormat('ru-RU', {
+const toCurrency = price => {
+    return new Intl.NumberFormat('ru-RU', {
         currency: 'rub',
         style: 'currency'
-    }).format(node.textContent)
+    }).format(price)
+}
+
+const toDate = date => {
+    return new Intl.DateTimeFormat('ru-RU', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    }).format(new Date(date))
+}
+
+document.querySelectorAll('.price').forEach(node => {
+    node.textContent = toCurrency(node.textContent)
+})
+
+document.querySelectorAll('.date').forEach(node => {
+    node.textContent = toDate(node.textContent)
 })
 
 const $card = document.querySelector('#card')
@@ -16,24 +35,24 @@ if ($card) {
             }).then(res => res.json())
                 .then(card => {
                     if (card.courses.length) {
-                        const html = card.courses.map((course) => {
+                        const html = card.courses.map(c => {
                             return `
-                            <tr>
-                                 <td>${course.title}</td>
-                                 <td>${course.count}</td>
-                                 <td>
-                                     <button class="btn btm-small js-remove" data-id="${course.id}">Удалить</button>
-                                  </td>
-                            </tr>
-                            `
+              <tr>
+                <td>${c.title}</td>
+                <td>${c.count}</td>
+                <td>
+                  <button class="btn btm-small js-remove" data-id="${c.id}">Удалить</button>
+                </td>
+              </tr>
+              `
                         }).join('')
                         $card.querySelector('tbody').innerHTML = html
-                        $card.querySelector('.price').textContent = card.price
+                        $card.querySelector('.price').textContent = toCurrency(card.price)
                     } else {
-                        $card.innerHTML = '<p>Корзина пустая</p>'
+                        $card.innerHTML = '<p>Корзина пуста</p>'
                     }
                 })
         }
 
     })
-}
+} 
