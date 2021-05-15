@@ -1,14 +1,5 @@
 const {Schema, model} = require('mongoose')
 
-const opts = {
-    toObject: {
-        virtuals: true,
-    },
-    toJSON: {
-        virtuals: true,
-    },
-};
-
 const orderSchema = new Schema({
     courses: [
         {
@@ -34,7 +25,6 @@ const orderSchema = new Schema({
         type: Date,
         default: Date.now
     }
-
 })
 
 
