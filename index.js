@@ -2,12 +2,14 @@ const express = require('express')
 const path = require('path')
 const Handlebars = require('handlebars')
 const exphbs = require('express-handlebars')
+const csrf = require('csurf')
 const {allowInsecurePrototypeAccess} = require('@handlebars/allow-prototype-access')
 const mongoose = require('mongoose')
 const session = require('express-session')
 const MongoDBStore = require('connect-mongodb-session')(session);
 
 const varMiddleware = require('./middlewares/variables')
+const userMiddleware = require('./middlewares/user')
 
 const homeRoutes = require('./routes/home')
 const addRoutes = require('./routes/add')
@@ -49,7 +51,10 @@ app.use(session({
     saveUninitialized: false,
     store
 }))
+app.use(csrf())
 app.use(varMiddleware)
+app.use(userMiddleware)
+
 
 app.use('/', homeRoutes)
 app.use('/add', addRoutes)

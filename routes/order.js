@@ -9,7 +9,7 @@ router.get('/', auth, async (req, res) => {
         const orders = await Order.find({'user.userId': req.user._id})
             .populate('user.userId')
 
-        res.render('orders', {
+        res.render('order', {
             isOrder: true,
             title: 'Заказы',
             orders: orders.map(o => {
@@ -49,7 +49,7 @@ router.post('/', auth, async (req, res) => {
         await order.save()
         await req.user.clearCart()
 
-        res.redirect('/orders')
+        res.redirect('/order')
     } catch (e) {
         console.log(e)
     }

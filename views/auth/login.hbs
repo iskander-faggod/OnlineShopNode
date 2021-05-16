@@ -22,7 +22,7 @@
                     <span class="helper-text" data-error="Введите пароль"></span>
                 </div>
 
-
+                <input type="hidden" name="_csrf" value="{{csrf}}">
                 <button class="btn btn-primary col s6 offset-s3" type="submit">Войти</button>
             </form>
         </div>
@@ -36,6 +36,12 @@
                 </div>
 
                 <div class="input-field">
+                    <input id="name" name="name" type="text" class="validate" required>
+                    <label for="name">Name</label>
+                    <span class="helper-text" data-error="Введите имя"></span>
+                </div>
+
+                <div class="input-field">
                     <input id="rpassword" name="password" type="password" class="validate" required min="7">
                     <label for="rpassword">Password</label>
                     <span class="helper-text" data-error="Введите пароль"></span>
@@ -46,7 +52,7 @@
                     <label for="confirm">Password check</label>
                     <span class="helper-text" data-error="Введите пароль"></span>
                 </div>
-
+                <input type="hidden" name="_csrf" value="{{csrf}}">
 
                 <button class="btn btn-primary col s6 offset-s3" type="submit">Зарегестрироваться</button>
             </form>
