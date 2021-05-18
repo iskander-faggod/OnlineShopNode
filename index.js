@@ -6,7 +6,9 @@ const csrf = require('csurf')
 const {allowInsecurePrototypeAccess} = require('@handlebars/allow-prototype-access')
 const mongoose = require('mongoose')
 const session = require('express-session')
+const flash = require('connect-flash')
 const MongoDBStore = require('connect-mongodb-session')(session);
+const {password, login, url, hashValue} = require('./keys/index')
 
 const varMiddleware = require('./middlewares/variables')
 const userMiddleware = require('./middlewares/user')
@@ -18,19 +20,12 @@ const coursesRoutes = require('./routes/courses')
 const orderRoutes = require('./routes/order')
 const authRoutes = require('./routes/auth')
 
-const login = 'iskander'
-const password = 'IoYU6BzMmZzcV2y8'
-const url = 'mongodb+srv://Iskander:IoYU6BzMmZzcV2y8@online-shop.y8exm.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
+
 const app = express()
 const store = new MongoDBStore({
     collection: 'sessions',
     uri: url,
 })
-
-
-const User = require('./models/user')
-const Course = require('./models/course')
-
 
 const hbs = exphbs.create({
     defaultLayout: 'main',
@@ -46,12 +41,13 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.urlencoded({extended: true}))
 
 app.use(session({
-    secret: 'some secret',
+    secret: hashValue,
     resave: false,
     saveUninitialized: false,
     store
 }))
 app.use(csrf())
+app.use(flash())
 app.use(varMiddleware)
 app.use(userMiddleware)
 
