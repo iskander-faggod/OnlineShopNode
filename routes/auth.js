@@ -1,10 +1,13 @@
 const {Router} = require('express')
 const User = require('../models/user')
+const crypto = require('crypto')
 const bcrypt = require('bcryptjs')
 const router = Router()
 const nodemailer = require('nodemailer')
 const sendMail = require('../middlewares/sendEmail')
-const {fromMail,auth} = require('../keys/index')
+const resetMail = require('../middlewares/resetEmail')
+
+const {fromMail, auth} = require('../keys/index')
 
 let mailTransporter = nodemailer.createTransport({
     service: 'gmail',
@@ -87,6 +90,90 @@ router.post('/register', async (req, res, next) => {
                     console.log('Email sent successfully');
                 }
             });
+        }
+    } catch (e) {
+        if (e) throw e
+    }
+})
+
+router.get('/reset', async (req, res, next) => {
+    res.render('auth/reset', {
+        title: 'Забыли пароль?',
+        error: req.flash('error'),
+    })
+})
+
+router.post('/reset', (req, res, next) => {
+    try {
+        crypto.randomBytes(32, async (err, buf) => {
+            if (err) {
+                req.flash('error', 'Что-то пошло не так, повторите попытку позже')
+                return res.redirect('/auth/reset');
+            }
+            const token = buf.toString('hex')
+            const candidate = await User.findOne({email: req.body.email})
+            if (candidate) {
+                candidate.resetToken = token
+                candidate.resetTokenExp = Date.now() + 3600 * 1000
+                await candidate.save()
+                await mailTransporter.sendMail(resetMail(candidate.email, fromMail, token))
+                res.redirect('auth/login')
+            } else {
+                req.flash('error', 'Неккоректный email')
+                return res.redirect('/auth/reset');
+
+            }
+        })
+    } catch (e) {
+        if (e) throw e
+    }
+})
+
+router.get('/password/:token', async (req, res) => {
+    if (!req.params.token) {
+        return res.redirect('/auth/login')
+    }
+    try {
+        const candidate = await User.findOne({
+            resetToken: req.params.token,
+            resetTokenExp: {$gt: Date.now()}
+        })
+
+        if (!candidate) {
+            return res.redirect('/auth/register')
+        } else {
+            res.render('auth/password', {
+                title: 'Восстановить пароль',
+                error: req.flash('error'),
+                userId: candidate._id.toString(),
+                token: req.params.token
+            })
+        }
+
+
+    } catch (e) {
+        if (e) throw e
+    }
+
+})
+
+router.post('/password', async (req, res) => {
+    try {
+        const user = await User.findOne({
+            _id: req.body.userId,
+            resetToken: req.body.token,
+            resetTokenExp: {$gt: Date.now()}
+        })
+
+        if (user){
+            user.password = await bcrypt.hash(req.body.password, 10)
+            user.resetToken = undefined
+            user.resetTokenExp = undefined
+            await user.save()
+            res.redirect('/auth/login')
+        } else {
+            req.flash('loginError', 'Время жизни токена истекло')
+            res.redirect('/auth/login')
         }
     } catch (e) {
         if (e) throw e

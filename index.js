@@ -12,6 +12,7 @@ const {password, login, url, hashValue} = require('./keys/index')
 
 const varMiddleware = require('./middlewares/variables')
 const userMiddleware = require('./middlewares/user')
+const fileMiddleware = require('./middlewares/file')
 
 const homeRoutes = require('./routes/home')
 const addRoutes = require('./routes/add')
@@ -19,6 +20,7 @@ const cardRoutes = require('./routes/card')
 const coursesRoutes = require('./routes/courses')
 const orderRoutes = require('./routes/order')
 const authRoutes = require('./routes/auth')
+const profileRoutes = require('./routes/profile')
 
 
 const app = express()
@@ -38,6 +40,7 @@ app.set('view engine', 'hbs')
 app.set('views', 'views')
 
 app.use(express.static(path.join(__dirname, 'public')))
+app.use('/images', express.static(path.join(__dirname, 'images')))
 app.use(express.urlencoded({extended: true}))
 
 app.use(session({
@@ -46,6 +49,7 @@ app.use(session({
     saveUninitialized: false,
     store
 }))
+app.use(fileMiddleware.single('avatar'))
 app.use(csrf())
 app.use(flash())
 app.use(varMiddleware)
@@ -58,6 +62,7 @@ app.use('/courses', coursesRoutes)
 app.use('/card', cardRoutes)
 app.use('/order', orderRoutes)
 app.use('/auth', authRoutes)
+app.use('/profile', profileRoutes)
 
 const PORT = process.env.PORT || 3000
 

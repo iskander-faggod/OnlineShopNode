@@ -35,6 +35,12 @@
                     <li><a href="/order">Заказ</a></li>
                 {{/if}}
                 <li><a href="/auth/logout">Выйти</a></li>
+
+                {{#if isProfile}}
+                    <li class="active"><a href="/profile">Ваш профиль</a></li>
+                {{else}}
+                    <li><a href="/profile">Ваш профиль</a></li>
+                {{/if}}
             {{else}}
                 {{#if isLogin}}
                     <li class="active"><a href="/auth/login#login">Авторизация</a></li>
@@ -42,12 +48,9 @@
                     <li><a href="/auth/login#login">Авторизация</a></li>
                 {{/if}}
 
+
+
             {{/if}}
-
-
-
-
-
 
 
         </ul>
