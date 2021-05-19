@@ -9,6 +9,8 @@ const session = require('express-session')
 const flash = require('connect-flash')
 const MongoDBStore = require('connect-mongodb-session')(session);
 const {password, login, url, hashValue} = require('./keys/index')
+const helmet = require('helmet')
+const compression = require('compression')
 
 const varMiddleware = require('./middlewares/variables')
 const userMiddleware = require('./middlewares/user')
@@ -52,6 +54,8 @@ app.use(session({
 app.use(fileMiddleware.single('avatar'))
 app.use(csrf())
 app.use(flash())
+// app.use(helmet())
+app.use(compression())
 app.use(varMiddleware)
 app.use(userMiddleware)
 
